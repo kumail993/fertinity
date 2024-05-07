@@ -1,20 +1,30 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class ReservationsModel{
-  int id;
-  String name;
-  String date;
-  String type;
-  ReservationsModel(this.name, this.date, this.type,this.id);
+  int? id;
+  String? phone;
+  String? name;
+  String? date;
+  String? type;
+  ReservationsModel({this.name, this.date, this.type,this.id,this.phone});
 
-  ReservationsModel.fromJson(Map<String, dynamic> json)
-      : name = json['name'],
-        date = json['date'],
-        type = json['booking_type'],
-        id = json['id'];
-
-  Map<String, dynamic> toJson() => {
-    'name': name,
-    'date': date,
-    'booking_type': type,
-    'id': id
-  };
+   tojson(){
+     return {
+       "id":id,
+       "phone":phone,
+       "name":name,
+       "date":date,
+       "bookingType":type
+     };
+   }
+   factory ReservationsModel.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> snapshot){ 
+    final data = snapshot.data();
+    return ReservationsModel(
+      id: data?['id'],
+      phone: data?['phone'],
+      name: data?['name'],
+      date: data?['date'],
+      type: data?['bookingType']
+    );
+   }
 }

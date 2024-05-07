@@ -1,18 +1,33 @@
 import 'package:faminity/models/reservations_model.dart';
+import 'package:faminity/services/booking_services.dart';
 import 'package:get/get.dart';
 
 class AdminController extends GetxController {
 
+  RxInt selectedTab = 0.obs;
+  final RxList<ReservationsModel> categories = <ReservationsModel>[].obs;
 
-  RxList<ReservationsModel> reservations = [
+  BookingServices bookingServices = BookingServices();
 
-    ReservationsModel('Ismail', '20/3/2024','Night', 1),
-     ReservationsModel('Kumail', '20/3/2024','Day', 1),
-      ReservationsModel('Fiazan', '20/3/2024','Night', 1),
-       ReservationsModel('Asad', '20/3/2024','Day', 1)
-  ].obs;
+
+  // Future<List<ReservationsModel>> fetchBookings() async {
+  //   return await BookingServices.getBookings();
+  // }
+
+  // Future<List<ReservationsModel>> fetchActiveBookings() async {
+  //   return await BookingServices.getActiveBookings();
+  // }
+
+  Stream<List<ReservationsModel>> fetchBookings() {
+  return bookingServices.getBookingsStream();
+}
+
+  Stream<List<ReservationsModel>> fetchActiveBookingsStream() {
+  return bookingServices.getActiveBookingsStream();
+}
+
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
   }
 }
