@@ -13,7 +13,6 @@ class SplashScreen extends GetView<SplashController> {
   @override
   Widget build(BuildContext context) {
     Get.put(SplashController());
-
     return Scaffold(
       body:
       Padding(
@@ -35,7 +34,6 @@ class SplashScreen extends GetView<SplashController> {
                 'assets/images/name.svg',
                 height: 100.h,
               ),
-        
               SizedBox(height: 14.h),
             ],
           ),

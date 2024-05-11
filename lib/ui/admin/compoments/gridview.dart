@@ -5,6 +5,7 @@ import 'package:faminity/services/booking_services.dart';
 import 'package:faminity/ui/admin/admin_controller.dart';
 import 'package:faminity/ui/widgets/card_action_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_remix/flutter_remix.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
@@ -95,7 +96,9 @@ class GridItem extends GetView<AdminController> {
                   ),
                 ]),
               ]),
-              const SizedBox(height: 15,),
+              const SizedBox(
+                height: 15,
+              ),
               Obx(() =>
                   // ignore: unrelated_type_equality_checks
                   controller.selectedTab == 0
@@ -115,11 +118,22 @@ class GridItem extends GetView<AdminController> {
                                 onPressed: () {
                                   BookingServices.deleteBooking(
                                       reservation.id.toString());
-                                })
+                                }),
+                            GestureDetector(
+                              onTap: () {
+                                controller.launchWhatsapp(reservation.phone!);
+                              },
+                              child: Icon(
+                                FlutterRemix.whatsapp_line,
+                                color: AppColors.primary,
+                                size: 30.sp,
+                              ),
+                            ),
                           ],
                         )
                       : Expanded(
                           child: TextButton(
+                              focusNode: FocusNode(),
                               onPressed: () {
                                 BookingServices.deleteBooking(
                                     reservation.id.toString());

@@ -17,6 +17,7 @@ class BookingServices {
   Stream<List<ReservationsModel>> getBookingsStream() {
   return FirebaseFirestore.instance
       .collection("BookingData")
+      //.orderBy("submittedDate", descending: false)
       .where('activeStatus', isEqualTo: false)
       .snapshots()
       .map((snapshot) => snapshot.docs.map((doc) => ReservationsModel.fromSnapshot(doc)).toList());

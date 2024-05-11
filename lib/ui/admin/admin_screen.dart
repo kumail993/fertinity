@@ -1,9 +1,11 @@
 import 'package:faminity/aap/color_theme.dart';
 import 'package:faminity/aap/text_style.dart';
-import 'package:faminity/models/reservations_model.dart';
 import 'package:faminity/ui/admin/admin_controller.dart';
-import 'package:faminity/ui/admin/compoments/gridview.dart';
+import 'package:faminity/ui/admin/widgets/grideview_builder.dart';
+import 'package:faminity/ui/admin/widgets/tabBar.dart';
+import 'package:faminity/ui/calender/calender_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_remix/flutter_remix.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
@@ -16,7 +18,7 @@ class AdminPanel extends GetView<AdminController> {
     return Scaffold(
         backgroundColor: AppColors.background,
         appBar: AppBar(
-          centerTitle: true,
+          backgroundColor: AppColors.primary,
           title: Text(
             'FARMINITY',
             style: globalTextStyle(
@@ -24,117 +26,41 @@ class AdminPanel extends GetView<AdminController> {
                 fontWeight: FontWeight.w600,
                 color: AppColors.lightGrey),
           ),
+          leading: IconButton(
+              icon: const Icon(FlutterRemix.calendar_2_line,
+                  color: AppColors.lightGrey),
+              onPressed: () {
+                Get.to(() => const CalenderView());
+              }),
+          centerTitle: true,
+          elevation: 0.0,
+          actions: [
+            Padding(
+              padding: const EdgeInsets.only(left: 10, right: 10),
+              child: GestureDetector(
+                  onTap: () {
+                    controller.logout();
+                  },
+                  child: Text(
+                    'Logout',
+                    style: globalTextStyle(
+                        fontSize: 14.sp,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.lightGrey),
+                  )),
+            ),
+          ],
         ),
         body: Padding(
           padding:
               const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
           child: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      controller.selectedTab.value = 0;
-                    },
-                    child: Obx(
-                      () => Container(
-                        alignment: Alignment.center,
-                        width: Get.width * 0.2,
-                        height: Get.height * 0.05,
-                        decoration: BoxDecoration(
-                          color: controller.selectedTab.value == 0
-                              ? AppColors.primary
-                              : AppColors
-                                  .lightGrey, // Highlight the selected tab
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        child: Text(
-                          'All',
-                          style: globalTextStyle(
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w600,
-                              color: controller.selectedTab.value == 0
-                                  ? AppColors.lightGrey
-                                  : AppColors.primary),
-                        ),
-                      ),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      controller.selectedTab.value = 1;
-                    },
-                    child: Obx(
-                      () => Container(
-                        alignment: Alignment.center,
-                        width: Get.width * 0.2,
-                        height: Get.height * 0.05,
-                        decoration: BoxDecoration(
-                          color: controller.selectedTab.value == 1
-                              ? AppColors.primary
-                              : AppColors
-                                  .lightGrey, // Highlight the selected tab
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        child: Text(
-                          'Active',
-                          style: globalTextStyle(
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w600,
-                              color: controller.selectedTab.value == 1
-                                  ? AppColors.lightGrey
-                                  : AppColors.primary),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              const HomeTabBar(),
               SizedBox(
                 height: 20.h,
               ),
-              Obx(() => StreamBuilder<List<ReservationsModel>>(
-                  //future: controller.selectedTab.value == 0 ? controller.fetchBookings() : controller.fetchActiveBookings(),
-                  stream: controller.selectedTab.value == 0
-                      ? controller.fetchBookings()
-                      : controller.fetchActiveBookingsStream(),
-                  builder: (context,
-                      AsyncSnapshot<List<ReservationsModel>> snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(
-                        child: CircularProgressIndicator(
-                          color: AppColors.primary,
-                        ),
-                      );
-                    }
-                    if (snapshot.data!.isEmpty){
-
-                      return const Center(
-                        child: Text('No Data'),
-                      );
-                    }
-                    if (snapshot.hasData) {
-                      return GridView.builder(
-                          gridDelegate:
-                             SliverGridDelegateWithFixedCrossAxisCount(
-                                childAspectRatio:1,
-                                  crossAxisCount: 2,
-                                  mainAxisSpacing: 20.0.h,
-                                  crossAxisSpacing: 5.0.w),
-                          itemCount: snapshot.data!.length,
-                          shrinkWrap: true,
-                          scrollDirection: Axis.vertical,
-                          physics: const BouncingScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            final booking = snapshot.data![index];
-                            return GridItem(reservation: booking);
-                          });
-                    }
-                    return const Center(
-                      child: Text('No Data'),
-                    );
-                  })),
+              const BookingGrid()
             ],
           ),
         ));
